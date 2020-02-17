@@ -9,6 +9,7 @@ from rest_framework.decorators import action
 from django.contrib.auth import authenticate
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework.authtoken.models import Token
+from rest_framework.permissions import DjangoModelPermissions
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.status import (
@@ -38,6 +39,7 @@ def login(request):
 
 
 class ItemViewSet(viewsets.ViewSet):
+    permission_classes = [DjangoModelPermissions]
     def list(self, request):
         queryset = Item.objects.filter(category=request.query_params.get("category"))
         serializer = ItemSerializer(queryset, many=True)
