@@ -17,6 +17,8 @@ from rest_framework.status import (
     HTTP_404_NOT_FOUND,
     HTTP_200_OK
 )
+import requests
+import json
 
 
 @csrf_exempt
@@ -38,9 +40,26 @@ def login(request):
 
 
 
-class ItemViewSet(viewsets.ViewSet):
-    permission_classes = [DjangoModelPermissions]
-    def list(self, request):
-        queryset = Item.objects.filter(category=request.query_params.get("category"))
-        serializer = ItemSerializer(queryset, many=True)
-        return Response(serializer.data)
+@csrf_exempt
+@api_view(["GET"])
+def get_item_by_category(request):
+    queryset = Item.objects.filter(category=request.GET["category"])
+    serializer = ItemSerializer(queryset, many=True)
+    return Response(serializer.data)
+
+
+
+@csrf_exempt
+@api_view(["GET"])
+def search_item(request):
+    host = 'search-asestest-uuri6jqdjtwsf4siizpeikka2e.us-west-1.es.amazonaws.com' 
+    index = 'as-crawled-data'
+    wildcard = 'Norton'
+    size = '&size=100'
+    q = 'q='
+    url = 'https://' + host + '/' + index + '/_search?' + q + wildcard + size
+    r = requests.get(url = url)
+    return Response(r.json())
+
+
+
