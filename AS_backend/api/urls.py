@@ -9,4 +9,5 @@ urlpatterns = [
     path('item/', views.get_item_by_category),
     path('item/search', views.search_item),
     path('user/login', views.login),
+    path('user/signup', views.sign_up),
 ]

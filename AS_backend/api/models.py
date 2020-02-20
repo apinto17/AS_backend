@@ -1,6 +1,6 @@
 from django.db import models
 import jsonfield
-
+from django.contrib.auth.models import User
 
 
 class Item(models.Model):
@@ -13,11 +13,6 @@ class Item(models.Model):
     specs = jsonfield.JSONField()
     unit = models.CharField(max_length=10)
     time = models.CharField(max_length=20)
-
-
-class User(models.Model):
-    name = models.CharField(max_length=50)
-    # TODO find a way to store an encrypted password
 
 
 
