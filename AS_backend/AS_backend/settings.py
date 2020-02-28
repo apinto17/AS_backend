@@ -87,7 +87,7 @@ WSGI_APPLICATION = 'AS_backend.wsgi.application'
 DATABASES = {
         # 'default': {
     #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'iclam19$AssembledSupply',
+    #     'NAME': 'iclam19$AssembledSupply', 
     #     'USER' : 'iclam19',
     #     'PASSWORD' : 'astest1234',
     #     'HOST' : 'iclam19.mysql.pythonanywhere-services.com',
