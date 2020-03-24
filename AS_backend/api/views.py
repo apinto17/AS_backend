@@ -56,9 +56,6 @@ def login(request):
 @csrf_exempt
 @api_view(["GET"])
 def get_item_by_category(request):
-    # queryset = Item.objects.filter(category=request.GET["category"])
-    # serializer = ItemSerializer(queryset, many=True)
-    # return Response(serializer.data)
     pass
 
 
@@ -67,8 +64,6 @@ def get_item_by_category(request):
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def search_item(request):
-    print(request.query_params.get('useES'))
-    print(request.query_params.get('search_term'))
     useES = request.query_params.get('useES')
     if("true" in useES):
         useES = True 
