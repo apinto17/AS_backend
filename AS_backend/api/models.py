@@ -3,23 +3,47 @@ import jsonfield
 from django.contrib.auth.models import User
 
 
-class Item(models.Model):
-    description = models.CharField(max_length=500)
-    price = models.CharField(max_length=20)
-    link = models.CharField(max_length=250)
-    category = models.CharField(max_length=100)
-    site_name = models.CharField(max_length=50)
-    image = models.CharField(max_length=250)
-    specs = jsonfield.JSONField()
-    unit = models.CharField(max_length=10)
-    time = models.CharField(max_length=20)
+class Categories(models.Model):
+    primary_category = models.TextField(blank=True, null=True)
+    site_name = models.TextField(blank=True, null=True)
+    input_category = models.TextField(blank=True, null=True)
+    output_category = models.TextField(blank=True, null=True)
+    output_category_ui = models.TextField(db_column='output_category_UI', blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'categories'
+
+
+class CrawledData(models.Model):
+    item_description = models.TextField(blank=True, null=True)
+    price = models.CharField(max_length=45, blank=True, null=True)
+    item_specifications = jsonfield.JSONField(blank=True, null=True) 
+    input_category = models.TextField(blank=True, null=True)
+    unit = models.CharField(max_length=45, blank=True, null=True)
+    url = models.TextField(blank=True, null=True)
+    site_name = models.TextField(blank=True, null=True)
+    image_source = models.TextField(blank=True, null=True)
+    txntime = models.CharField(max_length=45, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'crawled_data'
 
 
 
-class Assembly(models.Model):
-    name = models.CharField(max_length=50)
-    items = models.ManyToManyField(Item)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+class Projects(models.Model):
+    user_id = models.CharField(max_length=45, blank=True, null=True)
+    project_name = models.TextField(blank=True, null=True)
+    items = jsonfield.JSONField(blank=True, null=True) 
+    txntime = models.CharField(max_length=45, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'projects'
+
+
+
 
 
 

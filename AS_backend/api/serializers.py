@@ -1,13 +1,13 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from .models import Item, Assembly
+from .models import CrawledData, Categories, Projects
 
 
-class ItemSerializer(serializers.HyperlinkedModelSerializer):
+class CrawledDataSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Item
-        fields = ('description', 'price', 'link', 'category', 'site_name', 'image', 'specs', 'unit', 'time')
+        model = CrawledData
+        fields = ('item_description', 'price', 'item_specifications', 'input_category', 'unit', 'url', 'site_name', 'image_source', 'txntime')
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -25,9 +25,16 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
 
 
-class AssemblySerializer(serializers.HyperlinkedModelSerializer):
+class CategoriesSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = User
-        fields = ('name', 'items', 'user')
+        model = Categories
+        fields = ('primary_category', 'site_name', 'input_category', 'output_category', 'output_category_ui')
+
+
+
+class ProjectsSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = Projects
+        fields = ('user_id', 'project_name', 'items', 'txntime')
 
         

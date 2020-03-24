@@ -85,18 +85,19 @@ WSGI_APPLICATION = 'AS_backend.wsgi.application'
 # https://docs.djangoproject.com/en/2.2/ref/settings/#databases
 
 DATABASES = {
-        # 'default': {
-    #     'ENGINE': 'django.db.backends.mysql',
-    #     'NAME': 'iclam19$AssembledSupply', 
-    #     'USER' : 'iclam19',
-    #     'PASSWORD' : 'astest1234',
-    #     'HOST' : 'iclam19.mysql.pythonanywhere-services.com',
-    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'AssembledSupply', 
+        'USER' : 'AssembledSupply',
+        'PASSWORD' : 'astest1234',
+        'HOST' : 'asdbinstance.c5s3c2vl3ocv.us-west-1.rds.amazonaws.com',
     }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+    # }
 }
+
 
 
 # Password validation

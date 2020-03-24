@@ -1,6 +1,6 @@
 
-from .serializers import UserSerializer, ItemSerializer, AssemblySerializer
-from .models import Item, Assembly
+from .serializers import UserSerializer, CrawledDataSerializer, CategoriesSerializer, ProjectsSerializer
+from .models import CrawledData, Projects
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate
@@ -56,23 +56,36 @@ def login(request):
 @csrf_exempt
 @api_view(["GET"])
 def get_item_by_category(request):
-    queryset = Item.objects.filter(category=request.GET["category"])
-    serializer = ItemSerializer(queryset, many=True)
-    return Response(serializer.data)
+    # queryset = Item.objects.filter(category=request.GET["category"])
+    # serializer = ItemSerializer(queryset, many=True)
+    # return Response(serializer.data)
+    pass
 
 
 
 @csrf_exempt
 @api_view(["GET"])
+@permission_classes([AllowAny])
 def search_item(request):
-    host = 'search-asestest-uuri6jqdjtwsf4siizpeikka2e.us-west-1.es.amazonaws.com' 
-    index = 'as-crawled-data'
-    wildcard = 'Norton'
-    size = '&size=100'
-    q = 'q='
-    url = 'https://' + host + '/' + index + '/_search?' + q + wildcard + size
-    r = requests.get(url = url)
-    return Response(r.json())
-
+    print(request.query_params.get('useES'))
+    print(request.query_params.get('search_term'))
+    useES = request.query_params.get('useES')
+    if("true" in useES):
+        useES = True 
+    else:
+        useES = False
+    if(useES):
+        host = 'search-asestest-uuri6jqdjtwsf4siizpeikka2e.us-west-1.es.amazonaws.com' 
+        index = 'as-crawled-data'
+        wildcard = 'Norton'
+        size = '&size=100'
+        q = 'q='
+        url = 'https://' + host + '/' + index + '/_search?' + q + wildcard + size
+        r = requests.get(url = url)
+        return Response(r.json())
+    else:
+        results_set = CrawledData.objects.filter(item_description__icontains=request.query_params.get('search_term'))
+        serializer = CrawledDataSerializer(results_set, many=True)
+        return Response(serializer.data)
 
 
