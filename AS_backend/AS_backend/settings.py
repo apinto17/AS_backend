@@ -25,7 +25,9 @@ SECRET_KEY = 'k^onyh9tpcn4-fg!we)ruek!d9ni4b95-i6m=_ozrp!5k)dw_j'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+   'http://assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com/',
+]
 
 
 # Application definition
@@ -40,7 +42,7 @@ INSTALLED_APPS = [
     'api.apps.ApiConfig',
     'rest_framework',
     'rest_framework.authtoken',
-    'corsheaders'
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -144,6 +146,7 @@ STATIC_URL = '/static/'
 CORS_ORIGIN_WHITELIST = [
     "https://assembledsupply.com",
     "http://localhost:3000",
-    "http://127.0.0.1:8000"
+    "http://127.0.0.1:8000",
+    "http://assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com/",
 ]
 
