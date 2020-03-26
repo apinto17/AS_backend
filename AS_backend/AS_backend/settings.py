@@ -26,7 +26,7 @@ SECRET_KEY = 'k^onyh9tpcn4-fg!we)ruek!d9ni4b95-i6m=_ozrp!5k)dw_j'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-   'http://assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com/',
+   'assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com',
 ]
 
 
@@ -148,5 +148,6 @@ CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
     "http://127.0.0.1:8000",
     "http://assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com/",
+    "http://assembledsupply.com.s3-website.us-east-2.amazonaws.com/",
 ]
 
