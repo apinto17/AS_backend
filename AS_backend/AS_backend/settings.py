@@ -145,6 +145,7 @@ STATIC_URL = '/static/'
 
 CORS_ORIGIN_WHITELIST = [
     "https://assembledsupply.com",
+    "http://assembledsupply.com",
     "http://localhost:3000",
     "http://127.0.0.1:8000",
     "http://assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com/",
