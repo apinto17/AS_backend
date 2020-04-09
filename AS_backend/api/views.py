@@ -22,8 +22,9 @@ from django.contrib.auth.models import User
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def sign_up(request):
-    username = request.headers['username']
-    password = request.headers['password']
+    body = json.loads(request.body)
+    username = body['username']
+    password = body['password']
     if username is None or password is None:
         return Response({'error': 'Please provide both username and password'},
                         status=HTTP_400_BAD_REQUEST)
@@ -32,14 +33,15 @@ def sign_up(request):
     token, _ = Token.objects.get_or_create(user=user)
     return Response({'token': token.key},
                     status=HTTP_200_OK)
-
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
 
 @csrf_exempt
 @api_view(["POST"])
 @permission_classes([AllowAny])
 def login(request):
-    username = request.headers['username']
-    password = request.headers['password']
+    body = json.loads(request.body)
+    username = body['username']
+    password = body['password']
     if username is None or password is None:
         return Response({'error': 'Please provide both username and password'},
                         status=HTTP_400_BAD_REQUEST)
