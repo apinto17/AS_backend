@@ -57,8 +57,13 @@ def login(request):
 
 @csrf_exempt
 @api_view(["GET"])
+@permission_classes([AllowAny])
 def get_item_by_category(request):
-    pass
+    body = json.loads(request.body)
+    cat = body['category']
+    item_set = CrawledData.objects.filter(input_category=str(cat))
+    serializer = CrawledDataSerializer(results_set, many=True)
+    return Response(serializer.data)
 
 
 
