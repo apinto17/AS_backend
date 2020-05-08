@@ -27,6 +27,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
    'assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com',
+   'http://assembledsupply.com.s3-website.us-east-2.amazonaws.com/',
+   '127.0.0.1',
 ]
 
 
@@ -148,7 +150,7 @@ CORS_ORIGIN_WHITELIST = [
     "http://assembledsupply.com",
     "http://localhost:3000",
     "http://127.0.0.1:8000",
-    "http://assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com/",
-    "http://assembledsupply.com.s3-website.us-east-2.amazonaws.com/",
+    "http://assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com",
+    "http://assembledsupply.com.s3-website.us-east-2.amazonaws.com",
 ]
 

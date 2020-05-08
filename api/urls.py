@@ -10,4 +10,5 @@ urlpatterns = [
     path('item/search', views.search_item),
     path('user/login', views.login),
     path('user/signup', views.sign_up),
+    path('project', views.save_project),
 ]

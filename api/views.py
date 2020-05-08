@@ -16,6 +16,7 @@ from rest_framework.status import (
 import requests
 import json
 from django.contrib.auth.models import User
+import datetime
 
 
 @csrf_exempt
@@ -90,4 +91,21 @@ def search_item(request):
         serializer = CrawledDataSerializer(results_set, many=True)
         return Response(serializer.data)
 
+@csrf_exempt
+@api_view(["POST"])
+@permission_classes([AllowAny])
+def save_project(request):
+    print(request.body)
+    body = json.loads(request.body)
+    username = body['username']
+    user = User.objects.get(username=username)
+    user_id = user.id
+    project_name = body['project_name']
+    items = body['items']
 
+    print("{\"items\": " + str(items) + "}")
+    project = Projects(user_id=user_id, project_name=project_name, items=json.loads("{\"items\": " + json.dumps(items) + "}"), txntime=str(datetime.datetime.utcnow()))
+
+    project.save()
+
+    return Response(status=HTTP_200_OK)
