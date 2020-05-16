@@ -59,12 +59,14 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
 ]
 
+AUTHENTICATION_BACKENDS = (
+        'django.contrib.auth.backends.ModelBackend',
+    )
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated', )
+    )
 }
 
 ROOT_URLCONF = 'AS_backend.urls'

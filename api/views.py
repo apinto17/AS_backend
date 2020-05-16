@@ -1,5 +1,8 @@
 
-from .serializers import UserSerializer, CrawledDataSerializer, CategoriesSerializer, ProjectsSerializer
+from api.serializers.UserSerializer import UserSerializer 
+from api.serializers.CrawledDataSerializer import CrawledDataSerializer
+from api.serializers.CategoriesSerializer import CategoriesSerializer
+from api.serializers.ProjectsSerializer import ProjectsSerializer
 from .models import CrawledData, Projects
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -90,6 +93,8 @@ def search_item(request):
         results_set = CrawledData.objects.filter(item_description__icontains=request.query_params.get('search_term'))
         serializer = CrawledDataSerializer(results_set, many=True)
         return Response(serializer.data)
+
+
 
 @csrf_exempt
 @api_view(["POST"])
