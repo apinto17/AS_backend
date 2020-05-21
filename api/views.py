@@ -3,7 +3,7 @@ from api.serializers.UserSerializer import UserSerializer
 from api.serializers.CrawledDataSerializer import CrawledDataSerializer
 from api.serializers.CategoriesSerializer import CategoriesSerializer
 from api.serializers.AssemblySerializer import AssemblySerializer
-from .models import CrawledData, Assembly, Categories
+from .models import CrawledData, Assembly
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate
@@ -27,49 +27,11 @@ import datetime
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def get_item_by_category(request):
-    categories = Categories.objects.raw('''
-    
-        SELECT distinct key_name
-    ,count(key_name)
-    ,count(key_name) /
-    (Select
-    count(id) Total_Items
-    From crawled_data
-    where item_description like '%Cutoff%') Key_frequency
-    FROM crawled_data cd,
-    JSON_TABLE(JSON_KEYS(cd.item_specifications),
-                    '$[*]' COLUMNS (key_name VARCHAR(20) PATH '$')
-                    ) AS k
-                    where cd.item_description like '%Cutoff%'
-                    #cd.id between 389400 and 389460
-                    Group by key_name
-                    order by  count(key_name) desc
-
-    ''')
-
-    # categories = Categories.objects.raw('''
-    
-    #     SELECT distinct key_name
-    # ,count(key_name)
-    # ,count(key_name) /
-    # (Select
-    # count(id) Total_Items
-    # From crawled_data
-    # where item_description like '%''' + input_str + '''%') Key_frequency
-    # FROM crawled_data cd,
-    # JSON_TABLE(JSON_KEYS(cd.item_specifications),
-    #                 '$[*]' COLUMNS (key_name VARCHAR(20) PATH '$')
-    #                 ) AS k
-    #                 where cd.item_description like '%''' + input_str + '''%'
-    #                 #cd.id between 389400 and 389460
-    #                 Group by key_name
-    #                 order by  count(key_name) desc
-
-    # ''')
-
-    print(str(categories))
+    body = json.loads(request.body)
+    cat = body['category']
+    item_set = CrawledData.objects.filter(input_category=str(cat))
+    serializer = CrawledDataSerializer(results_set, many=True)
     return Response(status=HTTP_200_OK)
-
 
 
 

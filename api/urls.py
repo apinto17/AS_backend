@@ -13,6 +13,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
+    path('category', views.get_item_by_category),
     path('item/search', views.search_item),
     path('user/login', LoginAPI.as_view()),
     path('user/signup', SignUpAPI.as_view()),
