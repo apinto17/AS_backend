@@ -6,7 +6,7 @@ from api.exceptions import LoginException
 
 
 class LoginSerializer(serializers.Serializer):
-    email = serializers.CharField()
+    username = serializers.CharField()
     password = serializers.CharField()
 
     def validate(self, data):

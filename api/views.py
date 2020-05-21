@@ -2,8 +2,8 @@
 from api.serializers.UserSerializer import UserSerializer 
 from api.serializers.CrawledDataSerializer import CrawledDataSerializer
 from api.serializers.CategoriesSerializer import CategoriesSerializer
-from api.serializers.ProjectsSerializer import ProjectsSerializer
-from .models import CrawledData, Projects
+from api.serializers.AssemblySerializer import AssemblySerializer
+from .models import CrawledData, Assembly, Categories
 from rest_framework.response import Response
 from rest_framework.decorators import action
 from django.contrib.auth import authenticate
@@ -22,52 +22,54 @@ from django.contrib.auth.models import User
 import datetime
 
 
-@csrf_exempt
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def sign_up(request):
-    body = json.loads(request.body)
-    username = body['username']
-    password = body['password']
-    if username is None or password is None:
-        return Response({'error': 'Please provide both username and password'},
-                        status=HTTP_400_BAD_REQUEST)
-    user = User(username, password)
-    serializer = UserSerializer(user)
-    token, _ = Token.objects.get_or_create(user=user)
-    return Response({'token': token.key},
-                    status=HTTP_200_OK)
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   
-
-@csrf_exempt
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def login(request):
-    body = json.loads(request.body)
-    username = body['username']
-    password = body['password']
-    if username is None or password is None:
-        return Response({'error': 'Please provide both username and password'},
-                        status=HTTP_400_BAD_REQUEST)
-    user = authenticate(username=username, password=password)
-    if not user:
-        return Response({'error': 'Invalid Credentials'},
-                        status=HTTP_404_NOT_FOUND)
-    token, _ = Token.objects.get_or_create(user=user)
-    return Response({'token': token.key},
-                    status=HTTP_200_OK)
-
-
 
 @csrf_exempt
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def get_item_by_category(request):
-    body = json.loads(request.body)
-    cat = body['category']
-    item_set = CrawledData.objects.filter(input_category=str(cat))
-    serializer = CrawledDataSerializer(results_set, many=True)
-    return Response(serializer.data)
+    categories = Categories.objects.raw('''
+    
+        SELECT distinct key_name
+    ,count(key_name)
+    ,count(key_name) /
+    (Select
+    count(id) Total_Items
+    From crawled_data
+    where item_description like '%Cutoff%') Key_frequency
+    FROM crawled_data cd,
+    JSON_TABLE(JSON_KEYS(cd.item_specifications),
+                    '$[*]' COLUMNS (key_name VARCHAR(20) PATH '$')
+                    ) AS k
+                    where cd.item_description like '%Cutoff%'
+                    #cd.id between 389400 and 389460
+                    Group by key_name
+                    order by  count(key_name) desc
+
+    ''')
+
+    # categories = Categories.objects.raw('''
+    
+    #     SELECT distinct key_name
+    # ,count(key_name)
+    # ,count(key_name) /
+    # (Select
+    # count(id) Total_Items
+    # From crawled_data
+    # where item_description like '%''' + input_str + '''%') Key_frequency
+    # FROM crawled_data cd,
+    # JSON_TABLE(JSON_KEYS(cd.item_specifications),
+    #                 '$[*]' COLUMNS (key_name VARCHAR(20) PATH '$')
+    #                 ) AS k
+    #                 where cd.item_description like '%''' + input_str + '''%'
+    #                 #cd.id between 389400 and 389460
+    #                 Group by key_name
+    #                 order by  count(key_name) desc
+
+    # ''')
+
+    print(str(categories))
+    return Response(status=HTTP_200_OK)
+
 
 
 
@@ -95,22 +97,3 @@ def search_item(request):
         return Response(serializer.data)
 
 
-
-@csrf_exempt
-@api_view(["POST"])
-@permission_classes([AllowAny])
-def save_project(request):
-    print(request.body)
-    body = json.loads(request.body)
-    username = body['username']
-    user = User.objects.get(username=username)
-    user_id = user.id
-    project_name = body['project_name']
-    items = body['items']
-
-    print("{\"items\": " + str(items) + "}")
-    project = Projects(user_id=user_id, project_name=project_name, items=json.loads("{\"items\": " + json.dumps(items) + "}"), txntime=str(datetime.datetime.utcnow()))
-
-    project.save()
-
-    return Response(status=HTTP_200_OK)

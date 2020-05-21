@@ -32,7 +32,7 @@ class CrawledData(models.Model):
 
 
 
-class Projects(models.Model):
+class Assembly(models.Model):
     user_id = models.CharField(max_length=45, blank=True, null=True)
     project_name = models.TextField(blank=True, null=True)
     items = jsonfield.JSONField(blank=True, null=True) 

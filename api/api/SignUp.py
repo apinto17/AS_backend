@@ -10,21 +10,22 @@ from django.contrib.auth.models import User
 from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_404_NOT_FOUND,
-    HTTP_200_OK
+    HTTP_201_CREATED
 )
 from api.serializers.UserSerializer import UserSerializer
 
+# TODO add validator in UserSerializer
 
 class SignUpAPI(generics.GenericAPIView):
 
     def post(self,request, *args, **kwargs):
-        email = request.data['email']
-        password = request.data['password']
-        if email is None or password is None:
-            return Response({'error': 'Please provide both email and password'},
-                            status=HTTP_400_BAD_REQUEST)
-        user = UserSerializer().create(request.data)
-        token, _ = Token.objects.get_or_create(user=user)
-        return Response({'token': token.key},
-                        status=HTTP_200_OK)
-    
+        serialized = UserSerializer(data=request.data)
+        if serialized.is_valid():
+            user = serialized.create(request.data)
+            token, _ = Token.objects.get_or_create(user=user)
+            return Response({'token': token.key},
+                    status=HTTP_201_CREATED)
+        else:
+            return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        

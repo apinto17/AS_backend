@@ -13,9 +13,9 @@ from rest_framework.status import (
     HTTP_200_OK
 )
 
+# TODO add validator to login serializer
 
 class LoginAPI(generics.GenericAPIView):
-
 
     def post(self, request, *args, **kwargs):
         body = json.loads(request.body)

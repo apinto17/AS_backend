@@ -2,12 +2,12 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 
-from api.models import Projects
+from api.models import Assembly
 
 
-class ProjectsSerializer(serializers.HyperlinkedModelSerializer):
+class AssemblySerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
-        model = Projects
+        model = Assembly
         fields = ('user_id', 'project_name', 'items', 'txntime')
 
         
