@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from api.models import Assembly
 
 
-class AssemblySerializer(serializers.HyperlinkedModelSerializer):
+class AssemblySerializer(serializers.ModelSerializer):
     class Meta:
         model = Assembly
         fields = ('user_id', 'project_name', 'items', 'txntime')

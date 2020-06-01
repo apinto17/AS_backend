@@ -4,7 +4,7 @@ from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 
 
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ('username', 'password')
