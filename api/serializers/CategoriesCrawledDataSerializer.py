@@ -31,6 +31,8 @@ class CategoriesCrawledDataSerializer(serializers.Serializer):
             else:
                 category = ret['output_category_ui'][start:end]
                 
+            if("|" in category):
+                category = category.replace("|", "")
             if(category == ret['output_category_ui']):
                 ret = None
             elif(category not in self.instance_list):

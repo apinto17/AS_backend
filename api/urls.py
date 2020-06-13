@@ -18,7 +18,7 @@ urlpatterns = [
     path('item/search', views.search_item),
     path('user/login', LoginAPI.as_view()),
     path('user/signup', SignUpAPI.as_view()),
-    path('assembly/', AssemblyList.as_view()),
+    path('assembly', AssemblyList.as_view()),
     path('assembly/<int:pk>/', AssemblyDetail.as_view()),
     path('item/<int:pk>/', CrawledDataDetail.as_view()),
 ]
