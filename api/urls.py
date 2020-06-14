@@ -16,6 +16,7 @@ from rest_framework.urlpatterns import format_suffix_patterns
 urlpatterns = [
     path('category', CategoryAPI.as_view()),
     path('item/search', views.search_item),
+    path('item/multipleSearch', views.search_multiple_items),
     path('user/login', LoginAPI.as_view()),
     path('user/signup', SignUpAPI.as_view()),
     path('assembly', AssemblyList.as_view()),

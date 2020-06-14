@@ -23,16 +23,36 @@ import datetime
 
 
 
+
 @csrf_exempt
 @api_view(["GET"])
 @permission_classes([AllowAny])
-def get_item_by_category(request):
-    body = json.loads(request.body)
-    cat = body['category']
-    item_set = CrawledData.objects.filter(input_category=str(cat))
-    serializer = CrawledDataSerializer(results_set, many=True)
-    return Response(status=HTTP_200_OK)
+def search_multiple_items(request):
+    useES = request.data['useES']
+    search_items = request.data['search_items']
+    res = {}
+    for search_item in search_items:
+        print(search_item)
+        results = search(useES, search_item)
+        res[search_item] = results
 
+    return Response(res)
+
+
+def search(useES, search_item):
+    if(useES):
+        host = 'search-asestest-uuri6jqdjtwsf4siizpeikka2e.us-west-1.es.amazonaws.com' 
+        index = 'as-crawled-data'
+        wildcard = 'Norton'
+        size = '&size=100'
+        q = 'q=' + search_item
+        url = 'https://' + host + '/' + index + '/_search?' + q + wildcard + size
+        r = requests.get(url = url)
+        return r.json
+    else:
+        results_set = CrawledData.objects.filter(item_description__icontains=search_item)
+        serializer = CrawledDataSerializer(results_set, many=True)
+        return serializer.data
 
 
 @csrf_exempt
@@ -49,7 +69,7 @@ def search_item(request):
         index = 'as-crawled-data'
         wildcard = 'Norton'
         size = '&size=100'
-        q = 'q='
+        q = 'q=' + request.query_params.get('search_term')
         url = 'https://' + host + '/' + index + '/_search?' + q + wildcard + size
         r = requests.get(url = url)
         return Response(r.json())
