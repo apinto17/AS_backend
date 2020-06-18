@@ -3,6 +3,7 @@ from api.serializers.UserSerializer import UserSerializer
 from api.serializers.CrawledDataSerializer import CrawledDataSerializer
 from api.serializers.CategoriesSerializer import CategoriesSerializer
 from api.serializers.AssemblySerializer import AssemblySerializer
+from api.serializers.SpecsSerializer import SpecsSerializer
 from .models import CrawledData, Assembly
 from rest_framework.response import Response
 from rest_framework.decorators import action
@@ -28,29 +29,49 @@ import datetime
 @api_view(["GET"])
 @permission_classes([AllowAny])
 def item_specs(request):
-    item_desc = request.data['item_desc']
+    freq_level = .5
+    items = request.data['items']
     cursor = connection.cursor()
 
-    query = """ SELECT distinct key_name
-            ,count(key_name) as count_key
+    item_params = "("
+    for item in items:
+        if(type(item) is not int):
+            return Response(status=HTTP_400_BAD_REQUEST)
+        item_params += "'" + str(item) + "',"
+    item_params = item_params[:-1]
+    item_params += ")"
+
+
+    query = """ Select
+            q1.key_name Key_Name
+            ,group_concat(Distinct q1.elements)
+            ,count(key_name) Key_Name_Count
             ,count(key_name) /
             (Select
             count(id) Total_Items
-            From AssembledSupply.crawled_data
-            where item_description like '%Cutoff%') key_frequency
-            FROM AssembledSupply.crawled_data cd,
+            From crawled_data
+            where id in """ + item_params + """) Key_Frequency
+            from
+            (
+            Select
+            k.key_name
+            ,json_unquote(Json_extract(cd.item_specifications,concat('$."',k.key_name,'"'))) elements
+            FROM crawled_data cd,
             JSON_TABLE(JSON_KEYS(cd.item_specifications),
                             '$[*]' COLUMNS (key_name VARCHAR(20) PATH '$')
                             ) AS k
-                            where cd.item_description like '%Cutoff%'
-                            Group by key_name
-                            order by  count(key_name) desc; """
+                            where cd.id in """ + item_params + """
+            )q1
+            group by q1.key_name
+            order by count(q1.key_name) desc """
 
     cursor.execute(query)
     res = cursor.fetchall()
-    print(res)
 
-    return Response(status=HTTP_200_OK)
+    serializer = SpecsSerializer(res, freq_level)
+
+
+    return Response(serializer.data(), status=HTTP_200_OK)
 
 
 

@@ -43,7 +43,3 @@ class Assembly(models.Model):
         db_table = 'projects'
 
 
-
-
-
-
