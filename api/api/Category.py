@@ -14,8 +14,8 @@ class CategoryAPI(generics.GenericAPIView):
 
     def get(self,request, *args, **kwargs):
         # make query
-        cat_string = request.data["cat_string"]
-        level = request.data["current_level"]
+        cat_string = self.request.GET.get("cat_string")
+        level = self.request.GET.get("current_level")
         categories = Categories.objects.filter(output_category_ui__startswith=cat_string)
         item_cats = Categories.objects.filter(output_category_ui__exact=cat_string).values("input_category")
 
@@ -39,9 +39,3 @@ class CategoryAPI(generics.GenericAPIView):
         resp["categories"] = cat_list
         resp["items"] = items.data
         return Response(resp, status=HTTP_200_OK)
-
-
-    
-
-
-
