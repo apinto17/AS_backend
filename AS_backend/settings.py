@@ -45,10 +45,12 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'corsheaders',
+    "silk",
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "silk.middleware.SilkyMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -66,7 +68,8 @@ AUTHENTICATION_BACKENDS = (
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-    )
+    ),
+    "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer",],
 }
 
 ROOT_URLCONF = 'AS_backend.urls'
@@ -155,4 +158,13 @@ CORS_ORIGIN_WHITELIST = [
     "http://assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com",
     "http://assembledsupply.com.s3-website.us-east-2.amazonaws.com",
 ]
+
+# Options for the Silk profiler.
+SILKY_PYTHON_PROFILER = True
+SILKY_AUTHENTICATION = True
+SILKY_AUTHORISATION = True
+SILKY_META = True
+SILKY_INTERCEPT_PERCENT = 100
+# SILKY_PYTHON_PROFILER_BINARY = True
+# SILKY_PYTHON_PROFILER_RESULT_PATH = "./Profiling/"
 

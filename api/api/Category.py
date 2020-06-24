@@ -1,7 +1,6 @@
 from api.models import Categories, CrawledData
 from api.serializers.CategoriesSerializer import CategoriesSerializer
 from api.serializers.CrawledDataSerializer import CrawledDataSerializer
-from api.serializers.CategoriesCrawledDataSerializer import CategoriesCrawledDataSerializer
 from api.serializers.InputCategoriesSerializer import InputCategoriesSerializer
 from rest_framework import generics
 from api.pagination import SmallPagesPagination
@@ -11,31 +10,35 @@ from rest_framework.response import Response
 
 class CategoryAPI(generics.GenericAPIView):
     
-
     def get(self,request, *args, **kwargs):
-        # make query
-        cat_string = self.request.GET.get("cat_string")
-        level = int(self.request.GET.get("current_level"))
-        categories = Categories.objects.filter(output_category_ui__startswith=cat_string)
-        item_cats = Categories.objects.filter(output_category_ui__exact=cat_string).values("input_category")
+        # Query parameters are typically used for GET requests.
+        category_string = self.request.GET.get("cat_string")
+        
+        # We only want the sub-categories, so we add the | to the end of the category string.
+        # This ensures that we don't get similarly named categories that are at the same level as the category string.
+        categories = Categories.objects.filter(output_category_ui__startswith=category_string + "|")
+        
+        # Lots of categories are duplicated, casting the list to a set fixes this.
+        output_category_set = set(categories.values_list("output_category_ui"))
+        
+        # List comprehension, fast and readable. For each output category, grabs the lowest level and formats the data.
+        category_list = [{"category": category[0].split("|")[-1]} for category in output_category_set]
 
-        # get corresponding items if they exist
-        input_cats_raw = InputCategoriesSerializer(item_cats, many=True)
-        input_cats_list_dicts = list(input_cats_raw.data)
-        input_cats = list(map(lambda x : x["input_category"], input_cats_list_dicts))
-        print(input_cats)
-        items = CrawledData.objects.filter(input_category__in=input_cats)  
-
-        # serializer data
-        categories_serializer = CategoriesCrawledDataSerializer(categories, many=True, fields={"level" : level})
-        items = CrawledDataSerializer(items, many=True)
-
-        # format output
-        resp = {}
-        cat_list = []
-        for obj in categories_serializer.data:
-            if(obj is not None):
-                cat_list.append(obj)
-        resp["categories"] = cat_list
-        resp["items"] = items.data
-        return Response(resp, status=HTTP_200_OK)
+        # Throw all relevant input categories into a list.
+        input_categories = Categories.objects.filter(output_category_ui=category_string).values("input_category")
+        
+        # Extracts the relevant string from each input category.
+        input_category_list = [category["input_category"] for category in input_categories]
+        
+        # Grab all the items from the relevant input categories.
+        items = CrawledData.objects.filter(input_category__in=input_category_list)  
+        
+        # Serialize the data.
+        item_serializer = CrawledDataSerializer(items, many=True)
+        
+        # Throw it all together, and done.
+        data = {
+            "categories": category_list,
+            "items": item_serializer.data
+        }
+        return Response(data, status=HTTP_200_OK)
