@@ -118,7 +118,7 @@ def search_item(request):
     else:
         useES = False
     
-    data = search_helper(useEs, search_term)
+    data = search_helper(useES, search_term)
 
     return Response(data)
 
