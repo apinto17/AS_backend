@@ -16,7 +16,7 @@ class CategoryAPI(generics.GenericAPIView):
         
         # We only want the sub-categories, so we add the | to the end of the category string.
         # This ensures that we don't get similarly named categories that are at the same level as the category string.
-        categories = Categories.objects.filter(output_category_ui__startswith=category_string)
+        categories = Categories.objects.filter(output_category_ui__startswith=category_string + "|")
         
         # Lots of categories are duplicated, casting the list to a set fixes this.
         output_category_set = set(categories.values_list("output_category_ui"))
