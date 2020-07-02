@@ -82,9 +82,10 @@ def search_multiple_items(request):
     search_items = request.data['search_items']
     res = {}
     for search_item in search_items:
-        print(search_item)
         results = search_helper(useES, search_item)
-        res[search_item] = results
+        items = [item["id"] for item in results]
+        filters = get_item_filters(items)
+        res[search_item] = {"items" : results, "filters" : filters}
 
     return Response(res)
 
