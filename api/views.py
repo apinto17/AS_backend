@@ -30,12 +30,12 @@ import datetime
 @permission_classes([AllowAny])
 def item_specs(request):
     freq_level = .5
-    items = request.data['items']
+    items = request.GET.get("items").split(",")
     cursor = connection.cursor()
 
     item_params = "("
     for item in items:
-        if(type(item) is not int):
+        if(not item.isdigit()):
             return Response(status=HTTP_400_BAD_REQUEST)
         item_params += "'" + str(item) + "',"
     item_params = item_params[:-1]
