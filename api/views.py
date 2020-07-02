@@ -25,18 +25,13 @@ import datetime
 
 
 
-@csrf_exempt
-@api_view(["GET"])
-@permission_classes([AllowAny])
-def item_specs(request):
+
+def get_item_filters(items):
     freq_level = .5
-    items = ["249371"]
     cursor = connection.cursor()
 
     item_params = "("
     for item in items:
-        if(not item.isdigit()):
-            return Response(status=HTTP_400_BAD_REQUEST)
         item_params += "'" + str(item) + "',"
     item_params = item_params[:-1]
     item_params += ")"
@@ -71,7 +66,7 @@ def item_specs(request):
     serializer = SpecsSerializer(res, freq_level)
 
 
-    return Response(serializer.data(), status=HTTP_200_OK)
+    return serializer.data()
 
 
 
@@ -107,6 +102,8 @@ def search_helper(useES, search_item):
         return serializer.data
 
 
+# TODO this will break if you use elastic search, tell Ian to turn on ES cluster so we can determine
+# how to handle search results from ES cluster
 @csrf_exempt
 @api_view(["GET"])
 @permission_classes([AllowAny])
@@ -118,8 +115,12 @@ def search_item(request):
     else:
         useES = False
     
-    data = search_helper(useES, search_term)
+    search_results = search_helper(useES, search_term)
+    items = [item["id"] for item in search_results]
 
-    return Response(data)
+    filters = get_item_filters(items)
+    data = {"search_results" : search_results, "filters" : filters}
+
+    return Response(data, status=HTTP_200_OK)
 
 

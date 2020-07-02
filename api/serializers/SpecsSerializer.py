@@ -14,6 +14,6 @@ class SpecsSerializer():
                 self.data_list.append(data_dict)
 
     def data(self):
-        return {"filters" : self.data_list}
+        return self.data_list
 
 

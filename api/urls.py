@@ -21,8 +21,7 @@ urlpatterns = [
     path('user/signup', SignUpAPI.as_view()),
     path('assembly', AssemblyList.as_view()),
     path('assembly/<int:pk>/', AssemblyDetail.as_view()),
-    path('item/<int:pk>/', CrawledDataDetail.as_view()),
-    path('item/filters', views.item_specs),
+    path('item/<int:pk>/', CrawledDataDetail.as_view())
 ]
 
 
