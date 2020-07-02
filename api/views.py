@@ -27,6 +27,9 @@ import datetime
 
 
 def get_item_filters(items):
+
+    if(len(items) == 0):
+        return []
     freq_level = .5
     cursor = connection.cursor()
 
