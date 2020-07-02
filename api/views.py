@@ -30,7 +30,7 @@ import datetime
 @permission_classes([AllowAny])
 def item_specs(request):
     freq_level = .5
-    items = request.GET.get("items").split(",")
+    items = ["249371"]
     cursor = connection.cursor()
 
     item_params = "("
