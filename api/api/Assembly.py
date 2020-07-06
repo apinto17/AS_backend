@@ -15,11 +15,6 @@ class AssemblyList(generics.GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-    def get(self, request, format=None):
-        snippets = Snippet.objects.all()
-        serializer = SnippetSerializer(snippets, many=True)
-        return Response(serializer.data)
-
 
 class AssemblyDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Assembly.objects.all()
