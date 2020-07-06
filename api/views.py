@@ -124,7 +124,7 @@ def search_item(request):
     items = [item["id"] for item in search_results]
 
     filters = get_item_filters(items)
-    data = {"filters" : filters}
+    data = {"items" : items, "filters" : filters}
 
     return Response(data, status=HTTP_200_OK)
 
