@@ -67,9 +67,10 @@ def get_item_filters(items):
     res = cursor.fetchall()
 
     serializer = SpecsSerializer(res, freq_level)
+    data = serializer.data()
+    del serializer
 
-
-    return serializer.data()
+    return data
 
 
 
@@ -123,7 +124,7 @@ def search_item(request):
     items = [item["id"] for item in search_results]
 
     filters = get_item_filters(items)
-    data = {"search_results" : search_results, "filters" : filters}
+    data = {"filters" : filters}
 
     return Response(data, status=HTTP_200_OK)
 
