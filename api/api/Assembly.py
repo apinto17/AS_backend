@@ -1,5 +1,6 @@
-from api.models import Assembly
+from api.models import Assembly, CrawledData
 from api.serializers.AssemblySerializer import AssemblySerializer
+from api.serializers.CrawledDataSerializer import CrawledDataSerializer
 from rest_framework import generics
 import datetime
 from rest_framework import status
@@ -18,7 +19,18 @@ class AssemblyList(generics.GenericAPIView):
         user_id = self.request.GET.get("user_id")
         projects = Assembly.objects.filter(user_id=user_id)
         serializer = AssemblySerializer(projects, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+
+        res = []
+        projects = serializer.data
+        for project in projects:
+            item_objects = []
+            for item in project["items"]:
+                item_objects.append(CrawledData.objects.get(pk=item))
+            project["items"] = CrawledDataSerializer(item_objects, many=True).data
+            res.append(project)
+
+
+        return Response(res, status=status.HTTP_200_OK)
 
 
 
