@@ -14,6 +14,13 @@ class AssemblyList(generics.GenericAPIView):
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+    def get(self, request, *args, **kwargs):
+        user_id = self.request.GET.get("user_id")
+        print(user_id)
+        projects = Assembly.objects.filter(user_id=user_id)
+        serializer = AssemblySerializer(projects, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
 
 
 class AssemblyDetail(generics.RetrieveUpdateDestroyAPIView):
