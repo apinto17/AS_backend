@@ -10,4 +10,4 @@ class AssemblySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Assembly
-        fields = ('user_id', 'project_name', 'items', 'txntime')
+        fields = ('id', 'user_id', 'project_name', 'items', 'txntime')
