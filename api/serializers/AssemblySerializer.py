@@ -7,6 +7,7 @@ from api.models import Assembly
 class AssemblySerializer(serializers.ModelSerializer):
 
     items = serializers.JSONField()
+    user_id = serializers.CharField()
 
     class Meta:
         model = Assembly

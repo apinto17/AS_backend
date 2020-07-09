@@ -33,9 +33,9 @@ class CrawledData(models.Model):
 
 
 class Assembly(models.Model):
-    user_id = models.CharField(max_length=45, blank=True, null=True)
+    user_id = models.CharField(max_length=45, blank=False, null=False)
     project_name = models.TextField(blank=True, null=True)
-    items = jsonfield.JSONField(blank=True, null=True) 
+    items = jsonfield.JSONField(blank=False, null=False) 
     txntime = models.CharField(max_length=45, blank=True, null=True)
 
     class Meta:

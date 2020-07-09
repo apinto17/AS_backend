@@ -29,6 +29,7 @@ ALLOWED_HOSTS = [
    'assembledsupply-env.eba-6p4mynmi.us-east-2.elasticbeanstalk.com',
    'http://assembledsupply.com.s3-website.us-east-2.amazonaws.com/',
    '127.0.0.1',
+   'localhost:3000'
 ]
 
 

@@ -5,6 +5,9 @@ from rest_framework import generics
 import datetime
 from rest_framework import status
 from rest_framework.response import Response
+from django.http import Http404
+
+
 
 class AssemblyList(generics.GenericAPIView):
     def post(self, request, format=None):
@@ -34,6 +37,25 @@ class AssemblyList(generics.GenericAPIView):
 
 
 
-class AssemblyDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Assembly.objects.all()
-    serializer_class = AssemblySerializer
+class AssemblyDetail(generics.GenericAPIView):
+    def get_object(self, pk):
+        try:
+            return Assembly.objects.get(pk=pk)
+        except:
+            raise Http404
+
+    def put(self, request, pk, format=None):
+        assembly = self.get_object(pk)
+        serializer = AssemblySerializer(assembly, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            data = serializer.data
+            if(type(data) != list):
+                data = [data]
+            return Response(data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def delete(self, request, pk, format=None):
+        assembly = self.get_object(pk)
+        assembly.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
